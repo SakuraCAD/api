@@ -1,28 +1,40 @@
 import { Server } from '@overnightjs/core';
 
 import Logger from 'untitled-logging-library';
+
+import { RootController } from './controllers/RootController';
+import morgan from 'morgan';
+
+import * as constants from './constants';
 import chalk from 'chalk';
 
-import * as Controllers from './controllers';
-
-const logger = new Logger('api', `${chalk.gray('[{time}] [{prefix}]')} {level}{padding}{message}`);
-
 export default class SakuraCADServer extends Server {
+    private logger: Logger;
+
     constructor() {
         super();
+
+        this.logger = new Logger(null, `${chalk.gray('[{time}]')} {level}{padding}{message}`);
+
+        const that = this;
+        this.app.use(morgan('dev', {
+            stream: {
+                write(string) {
+                    that.logger.debug(string.trim());
+                }
+            }
+        }));
 
         this.setupControllers();
     }
 
     private setupControllers() {
-        const controllers = [new Controllers.RootController()];
-
-        super.addControllers(controllers);
+        super.addControllers(new RootController());
     }
 
     public start(port: number) {
         this.app.listen(port, () => {
-            logger.info('Server listening on port {port}', { port });
+            this.logger.info('Server listening on port {port}', { port });
         });
     }
 }
