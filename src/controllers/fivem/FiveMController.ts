@@ -18,7 +18,6 @@ export class FiveMController {
 
     @Get('checkClientStatus')
     private checkClientStatus(req: Request, res: Response) {
-        this.logger.info('client status check!');
         res.send('/fivem/checkClientStatus');
     }
     @Get('authorities')

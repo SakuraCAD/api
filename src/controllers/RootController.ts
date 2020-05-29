@@ -25,7 +25,6 @@ export class RootController {
 
     @Get()
     private ping(req: Request, res: Response) {
-        this.logger.debug('wowee');
         res.send({ pong: true });
     }
 }
